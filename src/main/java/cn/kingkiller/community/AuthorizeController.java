@@ -2,6 +2,8 @@ package cn.kingkiller.community;
 
 import cn.kingkiller.community.dto.AcesstokenDTO;
 import cn.kingkiller.community.dto.GithubUser;
+import cn.kingkiller.community.mapper.UserMapper;
+import cn.kingkiller.community.model.User;
 import cn.kingkiller.community.provide.GithubProvide;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.UUID;
 
 @Controller
 public class AuthorizeController {
@@ -25,6 +28,9 @@ public class AuthorizeController {
     @Value("${github.redirect.url}")
     private String redirectUrl;
 
+    @Autowired
+    private UserMapper userMapper;
+
     @GetMapping("/callback")
     public String callback(@RequestParam(name = "code") String code,
                            @RequestParam(name = "state") String state,
@@ -36,10 +42,17 @@ public class AuthorizeController {
         acesstokenDTO.setRedirect_url(redirectUrl);
         acesstokenDTO.setState(state);
         String acessToken = githubProvide.getAcessToken(acesstokenDTO);
-        GithubUser user = githubProvide.githubUser(acessToken);
-        if(user !=null){
+        GithubUser githubUser = githubProvide.githubUser(acessToken);
+        if(githubUser !=null){
             //登录成功，写cookie和session
-            request.getSession().setAttribute("user",user);
+            User user = new User();
+            user.setToken(UUID.randomUUID().toString());
+            user.setName(githubUser.getName());
+            user.setAccountId(String.valueOf(githubUser.getId()));
+            user.setGmtCreate(System.currentTimeMillis());
+            user.setGmtModified(user.getGmtCreate());
+            userMapper.insert(user);
+            request.getSession().setAttribute("user",githubUser);
             return "redirect:/";
 
         }else{
