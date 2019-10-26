@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>kingkiller</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>发布-kingkiller</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" href="css/bootstrap.min.css"/>
     <link rel="stylesheet" href="css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="css/community.css">
@@ -14,7 +14,8 @@
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
                 <span class="sr-only">kingkiller</span>
             </button>
             <a class="navbar-brand" href="/">King</a>
@@ -33,37 +34,47 @@
                     <a href="/publish">发布</a>
                 </li>
                 <li class="dropdown" th:if="${session.user != null}">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="${session.user.getName()}"><span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false" th:text="${session.user.getName()}"><span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="#">消息中心</a></li>
                         <li><a href="#">个人资料</a></li>
                         <li><a href="#">退出登录</a></li>
                     </ul>
                 </li>
-                <li th:if="${session.user == null}"><a href="https://github.com/login/oauth/authorize?client_id=3ce839c9aa61b09ca912&redirect_uri=http://127.0.0.1:8887/callback&scope=user&state=1">登录</a></li>
+                <li th:if="${session.user == null}"><a
+                        href="https://github.com/login/oauth/authorize?client_id=3ce839c9aa61b09ca912&redirect_uri=http://127.0.0.1:8887/callback&scope=user&state=1">登录</a>
+                </li>
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
+
 </nav>
 <div class="container-fluid main">
     <div class="row">
         <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
-            <h2><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>发现</h2>
+            <h2><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>发起</h2>
             <hr>
-            <div class="media" th:each="question: ${questions}">
-                <div class="media-left">
-                    <a href="#">
-                        <img class="media-object img-rounded" th:src="${question.user.avatarUrl}">
-                    </a>
+            <form action="/publish" method="post">
+                <div class="form-group">
+                    <label for="title">问题标题：</label>
+                    <input type="text" class="form-control" th:value="${title}" id="title" name="title" placeholder="问题标题">
                 </div>
-                <div class="media-body">
-                    <h4 class="media-heading" th:text="${question.title}"></h4>
-                    <span class="text-desc" th:text="${question.description}"></span>
-                    <span class="text-desc" th:text="${question.commentCount}"> 个回复 •</span>
-                    <span class="text-desc" th:text="${question.viewCount}">次浏览 •</span>
-                    ...
+                <div class="form-group">
+                    <label for="description">问题补充（必填）：</label>
+                    <textarea name="description"  th:value="${description}" id="description" class="form-control" cols="30" rows="10"></textarea>
                 </div>
-            </div>
+                <div class="form-group">
+                    <label for="tag">添加标签：</label>
+                    <input type="text" class="form-control" th:value="${tag}" id="tag" name="tag" placeholder="输入标签">
+                </div>
+                <div class="alert alert-warning alert-dismissible col-md-2" th:text="${error}" th:if="${error != null}"  role="alert" >
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+
+                <button type="submit" class="btn btn-success btn-publish">发布</button>
+
+            </form>
         </div>
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
             <h3>问题发起指南</h3><br>
@@ -89,6 +100,5 @@
         </div>
     </div>
 </div>
-
 </body>
 </html>

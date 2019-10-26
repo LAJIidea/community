@@ -12,9 +12,26 @@
 ##工具
 [Git](https://git-scm.com/download/win)
 [vs](https://www.visual-paradigm.com)
+[Lomkok](https://projectlombok.org/setup/maven)
+[thymeleaf](https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#iteration)
 
 
 ## 脚本
 '''sql
+create table question
+(
+	id int auto_increment,
+	title varchar(50) null,
+	description text null,
+	gmt_create bigint null,
+	gmt_modified bigint null,
+	creator int null,
+	comment_count int default 0 null,
+	view_count int default 0 null,
+	like_count int default 0 null,
+	tag varchar(256) null,
+	constraint question_pk
+		primary key (id)
+);
 
 '
